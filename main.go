@@ -22,25 +22,25 @@ func main() {
 				Flags: []cli.Flag{
 					&cli.StringFlag{
 						Name:     "arkZoneId",
-						Aliases:  []string{"a"},
+						Aliases:  []string{"zi"},
 						Usage:    "arkZoneId",
 						Required: true,
 					},
 					&cli.StringFlag{
 						Name:     "zoneName",
-						Aliases:  []string{"z"},
+						Aliases:  []string{"zn"},
 						Usage:    "zoneName",
 						Required: true,
 					},
 					&cli.StringFlag{
 						Name:     "zoneCategory",
-						Aliases:  []string{"c"},
+						Aliases:  []string{"zc"},
 						Usage:    "zoneCategory",
 						Required: true,
 					},
 					&cli.StringFlag{
 						Name:    "zoneType",
-						Aliases: []string{"t"},
+						Aliases: []string{"zt"},
 						Usage:   "zoneType",
 					},
 					&cli.StringFlag{
@@ -79,14 +79,13 @@ func main() {
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:     "baseUrl",
-				Aliases:  []string{"b"},
+				Aliases:  []string{"u"},
 				Usage:    "base url of the admin api, without trailing slash",
 				Required: false,
 				Value:    "https://penguin-stats.io/api/admin",
 			},
 			&cli.StringFlag{
 				Name:     "token",
-				Aliases:  []string{"t"},
 				Usage:    "bearer token for authentication to the admin api; required",
 				Required: true,
 			},
