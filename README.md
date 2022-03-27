@@ -2,7 +2,7 @@
      alt="Penguin Statistics - Logo"
      width="96px" />
 
-# Penguin Statistics - soracli
+# Penguin Statistics - `soracli`
 
 > Please notice that `soracli` is only aimed for internal usage. It is not oriented for public usage and is only a helper tool for maintainers to interact with the Penguin Statistics administration-related APIs.
 
