@@ -15,6 +15,7 @@ import (
 	"github.com/penguin-statistics/soracli/internal/consts"
 	"github.com/penguin-statistics/soracli/internal/models"
 	"github.com/penguin-statistics/soracli/internal/models/gamedata"
+	"github.com/penguin-statistics/soracli/internal/pkg/client"
 	"github.com/penguin-statistics/soracli/internal/pkg/gdutils"
 )
 
@@ -23,15 +24,17 @@ var ErrCannotGetFromRemote = errors.New("cannot get from remote")
 type GameDataService struct {
 	ItemService *ItemService
 
-	client *http.Client
+	http     *http.Client
+	pgclient *client.Penguin
 }
 
-func NewGameDataService(itemService *ItemService) *GameDataService {
+func NewGameDataService(itemService *ItemService, client *client.Penguin) *GameDataService {
 	return &GameDataService{
 		ItemService: itemService,
-		client: &http.Client{
+		http: &http.Client{
 			Timeout: time.Second * 10,
 		},
+		pgclient: client,
 	}
 }
 
@@ -44,6 +47,7 @@ var dropTypeOrderMapping = map[string]int{
 }
 
 func (s *GameDataService) RenderNewEvent(ctx context.Context, info *gamedata.NewEventBasicInfo) (*gamedata.RenderedObjects, error) {
+	log.Info().Interface("info", info).Msg("rendering new event")
 	zone, err := s.renderNewZone(info)
 	if err != nil {
 		return nil, err
@@ -80,6 +84,12 @@ func (s *GameDataService) RenderNewEvent(ctx context.Context, info *gamedata.New
 		TimeRange:    timeRange,
 		Activity:     activity,
 	}, nil
+}
+
+func (s *GameDataService) UpdateNewEvent(ctx context.Context, renderedObjects *gamedata.RenderedObjects) error {
+	log.Info().Interface("renderedObjects", renderedObjects).Msg("updating new event")
+
+	return s.pgclient.PostJSON("/save", renderedObjects)
 }
 
 func (s *GameDataService) renderNewZone(info *gamedata.NewEventBasicInfo) (*models.Zone, error) {
@@ -197,7 +207,7 @@ func (s *GameDataService) fetchLatestStages(ctx context.Context, arkZoneIds []st
 		return nil, err
 	}
 
-	res, err := s.client.Do(req)
+	res, err := s.http.Do(req)
 	if err != nil {
 		return nil, err
 	}

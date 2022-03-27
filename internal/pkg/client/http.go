@@ -12,14 +12,14 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-type HTTP struct {
+type Penguin struct {
 	baseUrl string
 	token   string
 	client  *http.Client
 }
 
-func NewHTTP(baseUrl, token string) *HTTP {
-	return &HTTP{
+func NewHTTP(baseUrl, token string) *Penguin {
+	return &Penguin{
 		baseUrl: baseUrl,
 		token:   token,
 		client: &http.Client{
@@ -28,12 +28,12 @@ func NewHTTP(baseUrl, token string) *HTTP {
 	}
 }
 
-func NewHTTPFromCliContext(ctx *cli.Context) *HTTP {
+func NewHTTPFromCliContext(ctx *cli.Context) *Penguin {
 	log.Debug().Str("baseUrl", ctx.String("baseUrl")).Str("token", ctx.String("token")).Msg("creating http client")
 	return NewHTTP(ctx.String("baseUrl"), ctx.String("token"))
 }
 
-func (h *HTTP) NewRequest(method, url string, body any) (*http.Request, error) {
+func (h *Penguin) NewRequest(method, url string, body any) (*http.Request, error) {
 	req, err := http.NewRequest(method, h.baseUrl+url, nil)
 	if err != nil {
 		return nil, err
@@ -51,13 +51,11 @@ func (h *HTTP) NewRequest(method, url string, body any) (*http.Request, error) {
 	return req, nil
 }
 
-func (h *HTTP) GetJSON(url string, v any) error {
+func (h *Penguin) GetJSON(url string, v any) error {
 	req, err := h.NewRequest("GET", url, nil)
 	if err != nil {
 		return err
 	}
-
-	log.Debug().Interface("headers", req.Header).Msg("request")
 
 	resp, err := h.client.Do(req)
 	if err != nil {
@@ -69,6 +67,32 @@ func (h *HTTP) GetJSON(url string, v any) error {
 	defer resp.Body.Close()
 
 	json.NewDecoder(resp.Body).Decode(v)
+
+	return nil
+}
+
+func (h *Penguin) PostJSON(url string, v any) error {
+	req, err := h.NewRequest("POST", url, v)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := h.client.Do(req)
+	if err != nil {
+		return err
+	} else if resp.StatusCode != 200 {
+		// log response
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			log.Error().Err(err).Msg("failed to read response body")
+		} else {
+			log.Error().Str("body", string(body)).Msg("request failed")
+		}
+		return errors.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	defer resp.Body.Close()
 
 	return nil
 }

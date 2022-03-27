@@ -5,6 +5,11 @@ go 1.18
 require github.com/urfave/cli/v2 v2.4.0
 
 require (
+	github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e // indirect
+	github.com/manifoldco/promptui v0.9.0 // indirect
+)
+
+require (
 	github.com/ahmetb/go-linq/v3 v3.2.0
 	github.com/cpuguy83/go-md2man/v2 v2.0.1 // indirect
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect

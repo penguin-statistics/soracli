@@ -11,10 +11,10 @@ import (
 )
 
 type ItemService struct {
-	http *client.HTTP
+	http *client.Penguin
 }
 
-func NewItemService(http *client.HTTP) *ItemService {
+func NewItemService(http *client.Penguin) *ItemService {
 	return &ItemService{
 		http: http,
 	}
