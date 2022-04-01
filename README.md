@@ -9,7 +9,7 @@
 [![Status](https://img.shields.io/badge/status-development-red)](#readme)
 [![License](https://img.shields.io/github/license/penguin-statistics/soracli)](https://github.com/penguin-statistics/soracli/blob/main/LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/penguin-statistics/soracli)](https://github.com/penguin-statistics/soracli/commits/main)
-[![go.mod Version](https://img.shields.io/golang/go.mod/penguin-statistics/soracli)](https://github.com/penguin-statistics/soracli/blob/main/go.mod)
+[![go.mod Version](https://img.shields.io/github/go-mod/go-version/penguin-statistics/soracli)](https://github.com/penguin-statistics/soracli/blob/main/go.mod)
 
 soracli is the [Penguin Statistics](https://penguin-stats.io/?utm_source=github) Admin Maintenance CLI, aimed to help maintainers manage in-side data with ease.
 
