@@ -68,7 +68,7 @@ func (s *GameDataService) RenderNewEvent(ctx context.Context, info *gamedata.New
 	stages := make([]*models.Stage, 0)
 	dropInfosMap := make(map[string][]*models.DropInfo)
 	for _, gamedataStage := range importStages {
-		log.Debug().Interface("stage", gamedataStage).Msg("rendering stage")
+		log.Trace().Interface("stage", gamedataStage).Msg("rendering stage")
 		stage, dropInfosForOneStage, err := s.genStageAndDropInfosFromGameData(ctx, info.Server, gamedataStage, 0, timeRange)
 		if err != nil {
 			return nil, err
@@ -87,7 +87,7 @@ func (s *GameDataService) RenderNewEvent(ctx context.Context, info *gamedata.New
 }
 
 func (s *GameDataService) UpdateNewEvent(ctx context.Context, renderedObjects *gamedata.RenderedObjects) error {
-	log.Info().Interface("renderedObjects", renderedObjects).Msg("updating new event")
+	log.Trace().Interface("renderedObjects", renderedObjects).Msg("updating new event")
 
 	return s.pgclient.PostJSON("/save", renderedObjects)
 }
@@ -207,6 +207,8 @@ func (s *GameDataService) fetchLatestStages(ctx context.Context, arkZoneIds []st
 		return nil, err
 	}
 
+	log.Debug().Str("url", u).Msg("fetching latest stages")
+
 	res, err := s.http.Do(req)
 	if err != nil {
 		return nil, err
@@ -248,7 +250,7 @@ func (s *GameDataService) fetchLatestStages(ctx context.Context, arkZoneIds []st
 		SortT(func(a, b *gamedata.Stage) bool { return gdutils.CompareStageCode(a.Code, b.Code) }).
 		ToSlice(&importStages)
 
-	log.Debug().Interface("stages", importStages).Msg("fetched latest stages")
+	log.Trace().Interface("stages", importStages).Msg("fetched latest stages")
 	return importStages, nil
 }
 

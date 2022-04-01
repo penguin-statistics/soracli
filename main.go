@@ -12,7 +12,7 @@ import (
 
 func main() {
 	app := &cli.App{
-		Name:  "sora",
+		Name:  "soracli",
 		Usage: "Penguin Statistics Admin CLI",
 		Commands: []*cli.Command{
 			{
@@ -64,10 +64,10 @@ func main() {
 						Layout:   time.RFC3339,
 					},
 					&cli.StringFlag{
-						Name:    "output",
-						Aliases: []string{"o"},
-						Usage:   "output rendered file",
-						Value:   "artifacts/rendered.json",
+						Name:    "editor",
+						Aliases: []string{"e"},
+						Usage:   "editor",
+						Value:   os.Getenv("EDITOR"),
 					},
 				},
 				Action: func(c *cli.Context) error {
@@ -87,6 +87,11 @@ func main() {
 				Name:     "token",
 				Usage:    "bearer token for authentication to the admin api; required",
 				Required: true,
+			},
+			&cli.BoolFlag{
+				Name:    "verbose",
+				Aliases: []string{"v"},
+				Usage:   "verbose output",
 			},
 		},
 	}

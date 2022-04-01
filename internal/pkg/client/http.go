@@ -57,10 +57,12 @@ func (h *Penguin) GetJSON(url string, v any) error {
 		return err
 	}
 
+	log.Debug().Str("method", req.Method).Str("url", req.URL.String()).Msg("making request")
+
 	resp, err := h.client.Do(req)
 	if err != nil {
 		return err
-	} else if resp.StatusCode != 200 {
+	} else if resp.StatusCode != http.StatusOK {
 		return errors.Errorf("unexpected status code: %d", resp.StatusCode)
 	}
 
@@ -78,10 +80,12 @@ func (h *Penguin) PostJSON(url string, v any) error {
 	}
 	req.Header.Set("Content-Type", "application/json")
 
+	log.Debug().Str("method", req.Method).Str("url", req.URL.String()).Msg("making request")
+
 	resp, err := h.client.Do(req)
 	if err != nil {
 		return err
-	} else if resp.StatusCode != 200 {
+	} else if resp.StatusCode != http.StatusOK {
 		// log response
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
