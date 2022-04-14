@@ -57,11 +57,10 @@ func main() {
 						Layout:   time.RFC3339,
 					},
 					&cli.TimestampFlag{
-						Name:     "end-time",
-						Aliases:  []string{"et"},
-						Usage:    "zone end time",
-						Required: true,
-						Layout:   time.RFC3339,
+						Name:    "end-time",
+						Aliases: []string{"et"},
+						Usage:   "zone end time",
+						Layout:  time.RFC3339,
 					},
 					&cli.StringFlag{
 						Name:    "editor",
