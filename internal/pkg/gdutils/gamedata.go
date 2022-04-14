@@ -46,6 +46,10 @@ func IsNormalModeExStage(stage *gamedata.Stage) bool {
 	return strings.HasPrefix(GetArkStageIDSecondPart(stage), ArkStageIDMarkEx) && !IsChallengeModeStage(stage)
 }
 
+func IsEasyDiffGroupStage(stage *gamedata.Stage) bool {
+	return stage.DiffGroup == consts.StageDiffGroupEasy
+}
+
 func IsCampaignStage(stage *gamedata.Stage) bool {
 	return stage.StageType == StageTypeCampaign
 }

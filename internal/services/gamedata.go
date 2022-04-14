@@ -52,6 +52,10 @@ func (s *GameDataService) RenderNewEvent(ctx context.Context, info *gamedata.New
 	if err != nil {
 		return nil, err
 	}
+	isMainZone := false
+	if zone.Category == consts.ZoneCategoryMainline {
+		isMainZone = true
+	}
 
 	timeRange := s.renderNewTimeRange(info)
 
@@ -69,7 +73,7 @@ func (s *GameDataService) RenderNewEvent(ctx context.Context, info *gamedata.New
 	dropInfosMap := make(map[string][]*models.DropInfo)
 	for _, gamedataStage := range importStages {
 		log.Trace().Interface("stage", gamedataStage).Msg("rendering stage")
-		stage, dropInfosForOneStage, err := s.genStageAndDropInfosFromGameData(ctx, info.Server, gamedataStage, 0, timeRange)
+		stage, dropInfosForOneStage, err := s.genStageAndDropInfosFromGameData(ctx, info.Server, gamedataStage, 0, timeRange, isMainZone)
 		if err != nil {
 			return nil, err
 		}
@@ -241,6 +245,7 @@ func (s *GameDataService) fetchLatestStages(ctx context.Context, arkZoneIds []st
 		case gdutils.IsTrainingStage(stage):
 		case gdutils.IsStoryStage(stage):
 		case gdutils.IsNormalModeExStage(stage):
+		case gdutils.IsEasyDiffGroupStage(stage):
 		default:
 			importStages = append(importStages, stage)
 		}
@@ -254,7 +259,7 @@ func (s *GameDataService) fetchLatestStages(ctx context.Context, arkZoneIds []st
 	return importStages, nil
 }
 
-func (s *GameDataService) genStageAndDropInfosFromGameData(ctx context.Context, server string, gamedataStage *gamedata.Stage, zoneId int, timeRange *models.TimeRange) (*models.Stage, []*models.DropInfo, error) {
+func (s *GameDataService) genStageAndDropInfosFromGameData(ctx context.Context, server string, gamedataStage *gamedata.Stage, zoneId int, timeRange *models.TimeRange, isMainZone bool) (*models.Stage, []*models.DropInfo, error) {
 	codeMap := make(map[string]string)
 	for _, lang := range consts.Languages {
 		codeMap[lang] = gamedataStage.Code
@@ -326,10 +331,18 @@ func (s *GameDataService) genStageAndDropInfosFromGameData(ctx context.Context, 
 	for dropType, rewards := range groupedRewards {
 		items := make([]*models.Item, 0)
 		for _, reward := range rewards {
-			if reward.Type == consts.ItemTypeMaterial {
+			if reward.Type == consts.ItemTypeMaterial || reward.Type == consts.ItemTypeCardExp {
 				item := itemsMap[reward.Id]
 				items = append(items, item)
-				bounds := s.decideItemBounds(item)
+				var bounds *models.Bounds
+				if isMainZone == true {
+					bounds = &models.Bounds{
+						Lower: 0,
+						Upper: 1,
+					}
+				} else {
+					bounds = s.decideItemBounds(item)
+				}
 				dropInfos = append(dropInfos, &models.DropInfo{
 					Server:      server,
 					ItemID:      null.IntFrom(int64(item.ItemID)),

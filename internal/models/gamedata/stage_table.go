@@ -11,6 +11,7 @@ type Stage struct {
 	Code          string         `json:"code"`
 	ZoneID        string         `json:"zoneId"`
 	StageDropInfo *StageDropInfo `json:"stageDropInfo"`
+	DiffGroup     string         `json:"diffGroup"`
 }
 
 type StageDropInfo struct {
