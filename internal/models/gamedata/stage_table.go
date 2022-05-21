@@ -4,6 +4,10 @@ type StageTable struct {
 	Stages map[string]*Stage `json:"stages"`
 }
 
+type RetroTable struct {
+	StageList map[string]*Stage `json:"stageList"`
+}
+
 type Stage struct {
 	StageID       string         `json:"stageId"`
 	StageType     string         `json:"stageType"`

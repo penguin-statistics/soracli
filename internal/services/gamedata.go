@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/ahmetb/go-linq/v3"
@@ -225,12 +226,19 @@ func (s *GameDataService) fetchLatestStages(ctx context.Context, sourceUrl strin
 		return nil, err
 	}
 
-	stageTable := gamedata.StageTable{}
-
-	json.Unmarshal([]byte(body), &stageTable)
+	var stageMap map[string]*gamedata.Stage
+	if strings.Contains(sourceUrl, "stage_table") {
+		stageTable := gamedata.StageTable{}
+		json.Unmarshal([]byte(body), &stageTable)
+		stageMap = stageTable.Stages
+	} else if strings.Contains(sourceUrl, "retro_table") {
+		retroTable := gamedata.RetroTable{}
+		json.Unmarshal([]byte(body), &retroTable)
+		stageMap = retroTable.StageList
+	}
 
 	importStages := make([]*gamedata.Stage, 0)
-	for _, stage := range stageTable.Stages {
+	for _, stage := range stageMap {
 		if len(arkZoneIds) > 0 && !linq.From(arkZoneIds).Contains(stage.ZoneID) {
 			continue
 		}
