@@ -46,7 +46,7 @@ var dropTypeOrderMapping = map[string]int{
 	"RECOGNITION_ONLY": 4,
 }
 
-func (s *GameDataService) RenderNewEvent(ctx context.Context, info *gamedata.NewEventBasicInfo) (*gamedata.RenderedObjects, error) {
+func (s *GameDataService) RenderNewEvent(ctx context.Context, sourceUrl string, info *gamedata.NewEventBasicInfo) (*gamedata.RenderedObjects, error) {
 	log.Info().Interface("info", info).Msg("rendering new event")
 	zone, err := s.renderNewZone(info)
 	if err != nil {
@@ -64,7 +64,7 @@ func (s *GameDataService) RenderNewEvent(ctx context.Context, info *gamedata.New
 		return nil, err
 	}
 
-	importStages, err := s.fetchLatestStages(ctx, []string{info.ArkZoneId})
+	importStages, err := s.fetchLatestStages(ctx, sourceUrl, []string{info.ArkZoneId})
 	if err != nil {
 		return nil, err
 	}
@@ -203,15 +203,13 @@ func (s *GameDataService) renderNewActivity(info *gamedata.NewEventBasicInfo) (*
 	}, nil
 }
 
-func (s *GameDataService) fetchLatestStages(ctx context.Context, arkZoneIds []string) ([]*gamedata.Stage, error) {
-	u := "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/stage_table.json"
-
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, u, http.NoBody)
+func (s *GameDataService) fetchLatestStages(ctx context.Context, sourceUrl string, arkZoneIds []string) ([]*gamedata.Stage, error) {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, sourceUrl, http.NoBody)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Debug().Str("url", u).Msg("fetching latest stages")
+	log.Debug().Str("url", sourceUrl).Msg("fetching latest stages")
 
 	res, err := s.http.Do(req)
 	if err != nil {

@@ -27,7 +27,7 @@ func NewCliApp(gameDataService *services.GameDataService) *CliApp {
 }
 
 func (a *CliApp) RenderGameData(c *cli.Context) error {
-	rendered, err := a.GameDataService.RenderNewEvent(c.Context, &gamedata.NewEventBasicInfo{
+	rendered, err := a.GameDataService.RenderNewEvent(c.Context, c.String("sourceUrl"), &gamedata.NewEventBasicInfo{
 		ArkZoneId:    c.String("ark-zone-id"),
 		ZoneName:     c.String("zone-name"),
 		ZoneCategory: c.String("zone-category"),

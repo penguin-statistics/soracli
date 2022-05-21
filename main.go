@@ -83,6 +83,12 @@ func main() {
 				Value:    "https://penguin-stats.io/api/admin",
 			},
 			&cli.StringFlag{
+				Name:     "sourceUrl",
+				Usage:    "source url of the json data",
+				Required: false,
+				Value:    "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata/excel/stage_table.json",
+			},
+			&cli.StringFlag{
 				Name:     "token",
 				Usage:    "bearer token for authentication to the admin api; required",
 				Required: true,
