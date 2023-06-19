@@ -322,12 +322,14 @@ func (s *GameDataService) genStageAndDropInfosFromGameData(ctx context.Context, 
 		extrasMap["arkItemId"] = activityToken
 	}
 
-	groupedRewards := make(map[int][]*gamedata.DisplayDetailReward)
-	groupedRewards[2] = make([]*gamedata.DisplayDetailReward, 0)
-	groupedRewards[3] = make([]*gamedata.DisplayDetailReward, 0)
-	groupedRewards[4] = make([]*gamedata.DisplayDetailReward, 0)
+	groupedRewards := make(map[string][]*gamedata.DisplayDetailReward)
+	groupedRewards[consts.StageTableDropTypeNormal] = make([]*gamedata.DisplayDetailReward, 0)
+	groupedRewards[consts.StageTableDropTypeSpecial] = make([]*gamedata.DisplayDetailReward, 0)
+	groupedRewards[consts.StageTableDropTypeAdditional] = make([]*gamedata.DisplayDetailReward, 0)
 	for _, reward := range gamedataStage.StageDropInfo.DisplayDetailRewards {
-		if reward.DropType > 4 || reward.DropType < 2 {
+		if reward.DropType != consts.StageTableDropTypeNormal &&
+			reward.DropType != consts.StageTableDropTypeSpecial &&
+			reward.DropType != consts.StageTableDropTypeAdditional {
 			continue
 		}
 		groupedRewards[reward.DropType] = append(groupedRewards[reward.DropType], reward)
@@ -433,11 +435,11 @@ func (s *GameDataService) decideItemBounds(item *models.Item) *models.Bounds {
 	return bounds
 }
 
-func (s *GameDataService) decideDropTypeBounds(dropType int, items []*models.Item) *models.Bounds {
-	if dropType == 2 || dropType == 3 {
+func (s *GameDataService) decideDropTypeBounds(dropType string, items []*models.Item) *models.Bounds {
+	if dropType == consts.StageTableDropTypeNormal || dropType == consts.StageTableDropTypeSpecial {
 		return &models.Bounds{Upper: len(items), Lower: 0}
 	}
-	if dropType == 4 {
+	if dropType == consts.StageTableDropTypeAdditional {
 		if len(items) == 0 {
 			return &models.Bounds{Upper: 0, Lower: 0}
 		} else {

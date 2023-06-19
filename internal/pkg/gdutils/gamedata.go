@@ -24,10 +24,10 @@ const (
 	StageTypeGuide        = "GUIDE"
 )
 
-var RewardTypeMap = map[int]string{
-	2: consts.DropTypeRegular,
-	3: consts.DropTypeSpecial,
-	4: consts.DropTypeExtra,
+var RewardTypeMap = map[string]string{
+	consts.StageTableDropTypeNormal:     consts.DropTypeRegular,
+	consts.StageTableDropTypeSpecial:    consts.DropTypeSpecial,
+	consts.StageTableDropTypeAdditional: consts.DropTypeExtra,
 }
 
 func IsTrainingStage(stage *gamedata.Stage) bool {

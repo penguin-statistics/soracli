@@ -24,6 +24,6 @@ type StageDropInfo struct {
 
 type DisplayDetailReward struct {
 	Id       string `json:"id"`
-	DropType int    `json:"dropType"`
+	DropType string `json:"dropType"`
 	Type     string `json:"type"`
 }
